@@ -9,6 +9,9 @@
 # Java
 build
 
+# Unity
+temp
+
 # Compiled Object files
 *.slo
 *.lo
