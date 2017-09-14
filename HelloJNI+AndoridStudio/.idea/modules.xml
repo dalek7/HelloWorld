@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file:///media/nvme/repos/androidgl/Hello/Hello.iml" filepath="/media/nvme/repos/androidgl/Hello/Hello.iml" />
+      <module fileurl="file:///media/nvme/repos/androidgl/Hello/app/app.iml" filepath="/media/nvme/repos/androidgl/Hello/app/app.iml" />
+    </modules>
+  </component>
+</project>
