@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "AudioRecordTest";
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private static String mFileName = null;
-
+    private static String mDirSave = null;
     private RecordButton mRecordButton = null;
     private MediaRecorder mRecorder = null;
 
@@ -36,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer   mPlayer = null;
 
     private TextView mTextView1 = null;
-
+    private TextView mTextViewIdx = null;
+    private String   mAndroidDeviceId = null;
+    int mFileCnt = 0;
 
 
     // Requesting permission to RECORD_AUDIO
@@ -73,37 +76,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPlaying() {
         mPlayer = new MediaPlayer();
-        try {
-            mPlayer.setDataSource(mFileName);
-            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
-            {
-                @Override
-                public void onCompletion(MediaPlayer mp)
-                {
-                    Log.i(LOG_TAG, "your code comes here");
-                    mPlayButton.EnablePlay();
-
-                }
-            });
-
-            mPlayer.prepare();
-            mPlayer.start();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed");
-        }
-
-
+        SetupPlay();
     }
 
     private void stopPlaying() {
         mPlayer.release();
         mPlayer = null;
     }
+    private void UpdateFileName()
+    {
 
+        String str1 = mAndroidDeviceId+ "_" + ProcFile.makeFileNameWithDateTime()+String.format("_%d", mFileCnt) + ".3gp" ;
+        mFileName = mDirSave + File.separator + str1;// "/audiorecordtest.3gp";
+
+        mFileCnt++;
+    }
     private void startRecording() {
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+
+        UpdateFileName();
+
         mRecorder.setOutputFile(mFileName);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
@@ -120,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
         mRecorder.stop();
         mRecorder.release();
         mRecorder = null;
+
+
     }
 
     class RecordButton extends Button {
@@ -128,9 +124,15 @@ public class MainActivity extends AppCompatActivity {
         OnClickListener clicker = new OnClickListener() {
             public void onClick(View v) {
                 onRecord(mStartRecording);
-                if (mStartRecording) {
+                if (mStartRecording)
+                {
+                    UpdateFileName();
+
                     setText("Stop recording");
-                } else {
+                }
+                else
+                {
+
                     setText("Start recording");
                 }
                 mStartRecording = !mStartRecording;
@@ -199,9 +201,9 @@ public class MainActivity extends AppCompatActivity {
         // Record to the external cache directory for visibility
         //String dirsave = getExternalCacheDir().getAbsolutePath();
         String dirname = "logger2017";
-        String dirsave = Environment.getExternalStorageDirectory() + File.separator + "data"+ File.separator + dirname;
+        mDirSave = Environment.getExternalStorageDirectory() + File.separator + "data"+ File.separator + dirname;
 
-        File tDir = new File(dirsave);
+        File tDir = new File(mDirSave);
         try {
             tDir.mkdirs();
         }catch (Exception e) {
@@ -215,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        mFileName = dirsave;
+        mFileName = mDirSave;
         mFileName += "/audiorecordtest.3gp";
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
@@ -244,20 +246,33 @@ public class MainActivity extends AppCompatActivity {
                         150,
                         0));
 
+
+
+        setContentView(ll);
+
+        mAndroidDeviceId = getUniqueID();
+        Dbg.out(mAndroidDeviceId);
+        mAndroidDeviceId = mAndroidDeviceId.substring(mAndroidDeviceId.length()-5, mAndroidDeviceId.length());
+        Dbg.out(mAndroidDeviceId);
+
+        mTextViewIdx = new TextView(this);
+        mTextViewIdx.setText(mAndroidDeviceId);
+
+        ll.addView(mTextViewIdx,
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        0));
+
         mTextView1 = new TextView(this);
-        mTextView1.setText(dirsave);
+        mTextView1.setText(mDirSave);
+
 
         ll.addView(mTextView1,
                 new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
-
-        setContentView(ll);
-
-
-
-
     }
 
     @Override
@@ -272,5 +287,34 @@ public class MainActivity extends AppCompatActivity {
             mPlayer.release();
             mPlayer = null;
         }
+    }
+
+    void SetupPlay()
+    {
+        try {
+            mPlayer.setDataSource(mFileName);
+            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+            {
+                @Override
+                public void onCompletion(MediaPlayer mp)
+                {
+                    Log.i(LOG_TAG, "your code comes here");
+                    mPlayButton.EnablePlay();
+
+                }
+            });
+
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+    }
+
+    // http://stackoverflow.com/a/28368570
+    public String getUniqueID(){
+        String  myAndroidDeviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        return  myAndroidDeviceId;
+
     }
 }
