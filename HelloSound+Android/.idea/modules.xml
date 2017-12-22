@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file:///media/nvme/repos/helloworld/HelloSound+Android/HelloSound+Android.iml" filepath="/media/nvme/repos/helloworld/HelloSound+Android/HelloSound+Android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/HelloSound+Android.iml" filepath="$PROJECT_DIR$/HelloSound+Android.iml" />
       <module fileurl="file:///media/nvme/repos/helloworld/HelloSound+Android/app/app.iml" filepath="/media/nvme/repos/helloworld/HelloSound+Android/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>
