@@ -8,6 +8,9 @@
 # Prerequisites
 *.d
 
+# Gradle stuff
+.gradle/
+
 # Java
 build
 
