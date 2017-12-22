@@ -3,6 +3,7 @@
 
 # Intellij IDE
 .idea
+.idea/
 
 # Prerequisites
 *.d
