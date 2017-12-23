@@ -108,23 +108,31 @@ public class MainActivity extends AppCompatActivity {
         ll.setLayoutParams(params);
         ll.setOrientation(LinearLayout.VERTICAL);
 
+        LinearLayout llinner = new LinearLayout(this);
+
+        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        //params.height = 100;
+
+        llinner.setLayoutParams(params);
+        llinner.setOrientation(LinearLayout.HORIZONTAL);
+
 
         mRecordButton = new RecordButton(this);
 
-        ll.addView(mRecordButton,
+        llinner.addView(mRecordButton,
                 new LinearLayout.LayoutParams(
                         450, //ViewGroup.LayoutParams.WRAP_CONTENT
                         250,//ViewGroup.LayoutParams.WRAP_CONTENT
                         0));
         mPlayButton = new PlayButton(this);
-        ll.addView(mPlayButton,
+        llinner.addView(mPlayButton,
                 new LinearLayout.LayoutParams(
                         450,
                         250,
                         0));
 
+        ll.addView(llinner);
 
-        setContentView(ll);
 
         mAndroidDeviceId = GetUniqueID();
         Dbg.out(mAndroidDeviceId);
@@ -157,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         0));
+
+        setContentView(ll);
     }
 
     @Override
